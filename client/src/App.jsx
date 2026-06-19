@@ -24,6 +24,7 @@ export default function App() {
   const [showImport, setShowImport] = useState(false);
   const [route, setRoute] = useState(null);
   const [selectedCompanyId, setSelectedCompanyId] = useState(null);
+  const [mobileShowMap, setMobileShowMap] = useState(false);
 
   const loadCompanies = useCallback(async () => {
     setCompanies(await api.fetchCompanies());
@@ -138,7 +139,7 @@ export default function App() {
         </div>
       </header>
 
-      <div className="main">
+      <div className={`main ${mobileShowMap ? 'mobile-map' : 'mobile-list'}`}>
         <aside className="sidebar">
           <div className="tabs">
             <button
@@ -211,6 +212,13 @@ export default function App() {
           )}
         </main>
       </div>
+
+      <button
+        className="mobile-map-toggle"
+        onClick={() => setMobileShowMap(v => !v)}
+      >
+        {mobileShowMap ? '☰ List' : '🗺 Map'}
+      </button>
 
       {editingCompany !== null && (
         <CompanyForm
