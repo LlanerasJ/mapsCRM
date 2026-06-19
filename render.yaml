@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: maps-crm
+    runtime: node
+    buildCommand: npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: VITE_GOOGLE_MAPS_API_KEY
+        sync: false
