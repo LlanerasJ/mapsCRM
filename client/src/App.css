@@ -1,5 +1,15 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+html, body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+#root {
+  height: 100%;
+}
+
 :root {
   --primary: #1a73e8;
   --primary-dark: #1557b0;
@@ -25,7 +35,16 @@ body {
 }
 
 /* Layout */
-.app { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  height: 100vh; /* fallback */
+  height: 100dvh;
+  overflow: hidden;
+  position: fixed;
+  inset: 0;
+}
 
 .header {
   height: var(--header);
@@ -701,8 +720,11 @@ body {
   .route-controls { padding: 12px 14px; padding-bottom: env(safe-area-inset-bottom, 12px); }
   .plan-btn { padding: 13px; font-size: 0.95rem; }
 
-  /* Use dynamic viewport height so browser chrome doesn't hide content */
-  .sidebar { height: 100dvh; }
+  /* Sidebar fills remaining height after header */
+  .sidebar { height: 100%; overflow: hidden; }
+
+  /* Safe area padding for notch/home indicator */
+  .route-controls { padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
 
   /* Modal — full screen on mobile */
   .modal-overlay { padding: 0; align-items: flex-end; }
