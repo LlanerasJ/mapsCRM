@@ -25,6 +25,7 @@ export default function App() {
   const [route, setRoute] = useState(null);
   const [selectedCompanyId, setSelectedCompanyId] = useState(null);
   const [mobileShowMap, setMobileShowMap] = useState(false);
+  const [gmapsUrl, setGmapsUrl] = useState('');
 
   const loadCompanies = useCallback(async () => {
     setCompanies(await api.fetchCompanies());
@@ -134,7 +135,7 @@ export default function App() {
           <input
             type="date"
             value={selectedDate}
-            onChange={e => { setSelectedDate(e.target.value); setRoute(null); }}
+            onChange={e => { setSelectedDate(e.target.value); setRoute(null); setGmapsUrl(''); }}
           />
         </div>
       </header>
@@ -179,6 +180,7 @@ export default function App() {
               onToggleVisit={handleToggleVisit}
               onMarkVisited={handleMarkVisited}
               onRouteComputed={setRoute}
+              onGmapsUrl={setGmapsUrl}
               onViewMap={() => setMobileShowMap(true)}
             />
           )}
@@ -188,6 +190,11 @@ export default function App() {
           <button className="map-back-btn" onClick={() => setMobileShowMap(false)}>
             ← List
           </button>
+          {gmapsUrl && (
+            <a href={gmapsUrl} target="_blank" rel="noopener noreferrer" className="gmaps-overlay-btn">
+              Open in Google Maps ↗
+            </a>
+          )}
           {noKey ? (
             <div className="no-key">
               <div className="no-key-box">

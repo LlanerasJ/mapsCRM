@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 
-export default function RoutePlanner({ companies, visits, date, isLoaded, onToggleVisit, onMarkVisited, onRouteComputed, onViewMap }) {
+export default function RoutePlanner({ companies, visits, date, isLoaded, onToggleVisit, onMarkVisited, onRouteComputed, onViewMap, onGmapsUrl }) {
   const [startAddress, setStartAddress] = useState('');
   const [computing, setComputing] = useState(false);
   const [routeError, setRouteError] = useState('');
-  const [gmapsUrl, setGmapsUrl] = useState('');
 
   const visitMap = Object.fromEntries(visits.map(v => [v.company_id, v]));
   const plannedIds = new Set(visits.map(v => v.company_id));
@@ -15,7 +14,7 @@ export default function RoutePlanner({ companies, visits, date, isLoaded, onTogg
     if (mappableVisits.length < 2) return;
     setComputing(true);
     setRouteError('');
-    setGmapsUrl('');
+    onGmapsUrl('');
 
     const service = new window.google.maps.DirectionsService();
     const stops = mappableVisits.map(v => ({ lat: v.lat, lng: v.lng }));
@@ -43,7 +42,6 @@ export default function RoutePlanner({ companies, visits, date, isLoaded, onTogg
       });
 
       onRouteComputed(result);
-      onViewMap();
 
       // Build Google Maps URL with optimized waypoint order
       const order = result.routes[0].waypoint_order;
@@ -54,7 +52,8 @@ export default function RoutePlanner({ companies, visits, date, isLoaded, onTogg
         ...reordered.map(s => `${s.lat},${s.lng}`),
         `${destination.lat},${destination.lng}`,
       ];
-      setGmapsUrl(`https://www.google.com/maps/dir/${allCoords.join('/')}`);
+      onGmapsUrl(`https://www.google.com/maps/dir/${allCoords.join('/')}`);
+      onViewMap();
     } catch {
       setRouteError('Could not compute route. Check that all companies have valid addresses.');
     } finally {
@@ -129,11 +128,6 @@ export default function RoutePlanner({ companies, visits, date, isLoaded, onTogg
           >
             {computing ? 'Computing route…' : `Plan Route (${mappableVisits.length} stops)`}
           </button>
-          {gmapsUrl && (
-            <a href={gmapsUrl} target="_blank" rel="noopener noreferrer" className="btn-gmaps">
-              Open in Google Maps ↗
-            </a>
-          )}
           {mappableVisits.length < 2 && (
             <p className="hint">Need at least 2 companies with verified locations to compute a route.</p>
           )}
