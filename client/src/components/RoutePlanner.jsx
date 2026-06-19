@@ -43,16 +43,15 @@ export default function RoutePlanner({ companies, visits, date, isLoaded, onTogg
 
       onRouteComputed(result);
 
-      // Build Google Maps URL with optimized waypoint order
+      // Build Google Maps URL using the official URL API with optimized waypoint order
       const order = result.routes[0].waypoint_order;
       const reordered = order.map(i => middleStops[i]);
       const originStr = typeof origin === 'string' ? origin : `${origin.lat},${origin.lng}`;
-      const allCoords = [
-        originStr,
-        ...reordered.map(s => `${s.lat},${s.lng}`),
-        `${destination.lat},${destination.lng}`,
-      ];
-      onGmapsUrl(`https://www.google.com/maps/dir/${allCoords.join('/')}`);
+      const destStr = `${destination.lat},${destination.lng}`;
+      const waypointsStr = reordered.map(s => `${s.lat},${s.lng}`).join('|');
+      let url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(originStr)}&destination=${destStr}&travelmode=driving`;
+      if (waypointsStr) url += `&waypoints=${encodeURIComponent(waypointsStr)}`;
+      onGmapsUrl(url);
       onViewMap();
     } catch {
       setRouteError('Could not compute route. Check that all companies have valid addresses.');
