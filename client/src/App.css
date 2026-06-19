@@ -381,6 +381,21 @@ body {
 .route-controls input:focus { border-color: var(--primary); }
 .plan-btn { width: 100%; padding: 10px; font-size: 0.9rem; }
 
+.btn-gmaps {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+  background: #34a853;
+  color: white;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background .15s;
+}
+.btn-gmaps:hover { background: #2d9147; }
+
 /* Modal */
 .modal-overlay {
   position: fixed;
@@ -682,9 +697,12 @@ body {
   .chk-addr { white-space: normal; font-size: 0.8rem; }
   .visit-toggle { width: 32px; height: 32px; font-size: 0.9rem; }
 
-  /* Route controls — extra bottom padding for mobile browser chrome */
-  .route-controls { padding: 12px 14px; padding-bottom: max(16px, env(safe-area-inset-bottom, 16px)); margin-bottom: 60px; }
+  /* Route controls */
+  .route-controls { padding: 12px 14px; padding-bottom: env(safe-area-inset-bottom, 12px); }
   .plan-btn { padding: 13px; font-size: 0.95rem; }
+
+  /* Use dynamic viewport height so browser chrome doesn't hide content */
+  .sidebar { height: 100dvh; }
 
   /* Modal — full screen on mobile */
   .modal-overlay { padding: 0; align-items: flex-end; }

@@ -179,6 +179,7 @@ export default function App() {
               onToggleVisit={handleToggleVisit}
               onMarkVisited={handleMarkVisited}
               onRouteComputed={setRoute}
+              onViewMap={() => setMobileShowMap(true)}
             />
           )}
         </aside>

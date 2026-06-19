@@ -1,33 +1,36 @@
 import React, { useState } from 'react';
 
-export default function RoutePlanner({ companies, visits, date, isLoaded, onToggleVisit, onMarkVisited, onRouteComputed }) {
+export default function RoutePlanner({ companies, visits, date, isLoaded, onToggleVisit, onMarkVisited, onRouteComputed, onViewMap }) {
   const [startAddress, setStartAddress] = useState('');
   const [computing, setComputing] = useState(false);
   const [routeError, setRouteError] = useState('');
+  const [gmapsUrl, setGmapsUrl] = useState('');
 
   const visitMap = Object.fromEntries(visits.map(v => [v.company_id, v]));
   const plannedIds = new Set(visits.map(v => v.company_id));
   const mappableVisits = visits.filter(v => v.lat && v.lng);
-
   const visitedCount = visits.filter(v => v.status === 'visited').length;
 
   const computeRoute = async () => {
     if (mappableVisits.length < 2) return;
     setComputing(true);
     setRouteError('');
+    setGmapsUrl('');
 
     const service = new window.google.maps.DirectionsService();
     const stops = mappableVisits.map(v => ({ lat: v.lat, lng: v.lng }));
 
-    let origin, destination, waypoints;
+    let origin, destination, waypoints, middleStops;
     if (startAddress.trim()) {
       origin = startAddress.trim();
       destination = stops[stops.length - 1];
-      waypoints = stops.slice(0, -1).map(loc => ({ location: loc, stopover: true }));
+      middleStops = stops.slice(0, -1);
+      waypoints = middleStops.map(loc => ({ location: loc, stopover: true }));
     } else {
       origin = stops[0];
       destination = stops[stops.length - 1];
-      waypoints = stops.slice(1, -1).map(loc => ({ location: loc, stopover: true }));
+      middleStops = stops.slice(1, -1);
+      waypoints = middleStops.map(loc => ({ location: loc, stopover: true }));
     }
 
     try {
@@ -38,8 +41,21 @@ export default function RoutePlanner({ companies, visits, date, isLoaded, onTogg
         optimizeWaypoints: true,
         travelMode: window.google.maps.TravelMode.DRIVING,
       });
+
       onRouteComputed(result);
-    } catch (err) {
+      onViewMap();
+
+      // Build Google Maps URL with optimized waypoint order
+      const order = result.routes[0].waypoint_order;
+      const reordered = order.map(i => middleStops[i]);
+      const originStr = typeof origin === 'string' ? origin : `${origin.lat},${origin.lng}`;
+      const allCoords = [
+        originStr,
+        ...reordered.map(s => `${s.lat},${s.lng}`),
+        `${destination.lat},${destination.lng}`,
+      ];
+      setGmapsUrl(`https://www.google.com/maps/dir/${allCoords.join('/')}`);
+    } catch {
       setRouteError('Could not compute route. Check that all companies have valid addresses.');
     } finally {
       setComputing(false);
@@ -103,7 +119,7 @@ export default function RoutePlanner({ companies, visits, date, isLoaded, onTogg
           <label>Start from (optional)</label>
           <input
             value={startAddress}
-            onChange={e => setStartAddress(e.target.value)}
+            onChange={e => { setStartAddress(e.target.value); setGmapsUrl(''); }}
             placeholder="Your office or home address"
           />
           <button
@@ -111,8 +127,13 @@ export default function RoutePlanner({ companies, visits, date, isLoaded, onTogg
             onClick={computeRoute}
             disabled={!isLoaded || computing || mappableVisits.length < 2}
           >
-            {computing ? 'Computing route…' : `Plan Route  (${mappableVisits.length} stops)`}
+            {computing ? 'Computing route…' : `Plan Route (${mappableVisits.length} stops)`}
           </button>
+          {gmapsUrl && (
+            <a href={gmapsUrl} target="_blank" rel="noopener noreferrer" className="btn-gmaps">
+              Open in Google Maps ↗
+            </a>
+          )}
           {mappableVisits.length < 2 && (
             <p className="hint">Need at least 2 companies with verified locations to compute a route.</p>
           )}
