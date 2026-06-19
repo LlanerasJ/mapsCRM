@@ -154,6 +154,9 @@ export default function App() {
             >
               Day Planner {visits.length > 0 && <span className="badge">{visits.length}</span>}
             </button>
+            <button className="tab-map-btn" onClick={() => setMobileShowMap(true)}>
+              🗺
+            </button>
           </div>
 
           {activeTab === 'companies' ? (
@@ -181,6 +184,9 @@ export default function App() {
         </aside>
 
         <main className="map-panel">
+          <button className="map-back-btn" onClick={() => setMobileShowMap(false)}>
+            ← List
+          </button>
           {noKey ? (
             <div className="no-key">
               <div className="no-key-box">
@@ -212,13 +218,6 @@ export default function App() {
           )}
         </main>
       </div>
-
-      <button
-        className="mobile-map-toggle"
-        onClick={() => setMobileShowMap(v => !v)}
-      >
-        {mobileShowMap ? '☰ List' : '🗺 Map'}
-      </button>
 
       {editingCompany !== null && (
         <CompanyForm

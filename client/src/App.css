@@ -595,23 +595,37 @@ body {
 .warn-text { color: var(--yellow); font-size: 0.82rem !important; }
 .success-text { color: var(--green); font-size: 0.82rem !important; }
 
-/* ── Mobile toggle FAB ─────────────────────────────────── */
-.mobile-map-toggle {
+/* ── Mobile map/list nav buttons ───────────────────────── */
+.tab-map-btn {
   display: none;
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 500;
-  background: var(--primary);
-  color: white;
   border: none;
-  border-radius: 24px;
-  padding: 12px 20px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  box-shadow: 0 4px 16px rgba(0,0,0,.25);
+  background: none;
   cursor: pointer;
+  padding: 12px 14px;
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
 }
+.tab-map-btn:hover { background: var(--bg); }
+
+.map-back-btn {
+  display: none;
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 10;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 7px 14px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  color: var(--text);
+}
+.map-back-btn:hover { background: var(--bg); }
 
 /* ── Responsive ────────────────────────────────────────── */
 @media (max-width: 768px) {
@@ -644,8 +658,9 @@ body {
   .mobile-map  .sidebar  { display: none; }
   .mobile-map  .map-panel { display: block; }
 
-  /* Show FAB */
-  .mobile-map-toggle { display: block; }
+  /* Show map nav buttons */
+  .tab-map-btn { display: block; }
+  .map-back-btn { display: block; }
 
   /* Tabs */
   .tabs button { padding: 11px 6px; font-size: 0.82rem; }
@@ -667,8 +682,8 @@ body {
   .chk-addr { white-space: normal; font-size: 0.8rem; }
   .visit-toggle { width: 32px; height: 32px; font-size: 0.9rem; }
 
-  /* Route controls */
-  .route-controls { padding: 12px 14px; }
+  /* Route controls — extra bottom padding for mobile browser chrome */
+  .route-controls { padding: 12px 14px; padding-bottom: max(16px, env(safe-area-inset-bottom, 16px)); margin-bottom: 60px; }
   .plan-btn { padding: 13px; font-size: 0.95rem; }
 
   /* Modal — full screen on mobile */
