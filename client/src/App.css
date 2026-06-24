@@ -630,16 +630,11 @@ body {
 .success-text { color: var(--green); font-size: 0.82rem !important; }
 
 /* ── Mobile map/list nav buttons ───────────────────────── */
-.tab-map-btn {
+.tabs button.tab-map-btn {
   display: none;
-  border: none;
-  background: none;
-  cursor: pointer;
+  flex: 0 0 auto;
   padding: 12px 14px;
   font-size: 1.1rem;
-  color: var(--text-muted);
-  border-bottom: 2px solid transparent;
-  margin-bottom: -2px;
 }
 .tab-map-btn:hover { background: var(--bg); }
 
@@ -712,7 +707,7 @@ body {
   .mobile-map  .map-panel { display: block; }
 
   /* Show map nav buttons */
-  .tab-map-btn { display: block; }
+  .tabs button.tab-map-btn { display: flex; }
   .map-back-btn { display: block; }
 
   /* Tabs */
